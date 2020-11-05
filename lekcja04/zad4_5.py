@@ -12,10 +12,15 @@ def odwracanie_iteracja(L, left, right):
         right -= 1
 
 
-Lr = list(range(10))
-odwracanie_rekurencja(Lr, 0, 9)
-print(Lr)
-
-Li = list(range(10))
-odwracanie_iteracja(Lr, 0, 9)
-print(Li)
+L1 = list(range(10))
+L2 = list(range(10))
+L3 = list(range(10))
+L4 = list(range(10))
+odwracanie_rekurencja(L1, 0, 9)
+odwracanie_rekurencja(L2, 3, 7)
+odwracanie_iteracja(L3, 0, 9)
+odwracanie_iteracja(L4, 3, 7)
+print(L1)
+print(L2)
+print(L3)
+print(L4)
