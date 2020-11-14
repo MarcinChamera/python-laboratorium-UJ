@@ -6,6 +6,13 @@ def fibonacci(n):
     elif n == 2:
         return 1
     else:
-    	return fibonacci(n-1) + fibonacci(n-2)
+    	nxt = 1
+    	curr = 1
+    	prev = 0
+    	for i in range(n):
+    		nxt = curr + prev
+    		curr = prev
+    		prev = nxt
+    	return nxt
 
 print(fibonacci(8))
