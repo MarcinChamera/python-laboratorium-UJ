@@ -22,7 +22,7 @@ class Frac:
 
     def polish(self, num, den):
         if num == 0:
-            return Frac(0, den)
+            return Frac(0, 1)
         gcd_res = self.gcd(num, den)
         num /= gcd_res
         den /= gcd_res
@@ -192,18 +192,18 @@ class TestFractions(unittest.TestCase):
         self.assertEqual(Frac(1, 2) + Frac(1, 3), Frac(5, 6))
         self.assertEqual(Frac(1, 3) + Frac(1, 3), Frac(2, 3))
         self.assertEqual(Frac(1, 3) + Frac(2, 7), Frac(13, 21))
-        self.assertEqual(Frac(0, 24) + Frac(0, 24), Frac(0, 24))
+        self.assertEqual(Frac(0, 24) + Frac(0, 24), Frac(0, 1))
 
     def test_sub_frac(self):
         self.assertEqual(Frac(1, 2) - Frac(1, 3), Frac(1, 6))
-        self.assertEqual(Frac(1, 3) - Frac(1, 3), Frac(0, 3))
+        self.assertEqual(Frac(1, 3) - Frac(1, 3), Frac(0, 1))
         self.assertEqual(Frac(1, 2) - Frac(2, 7), Frac(3, 14))
 
     def test_mul_frac(self):
         self.assertEqual(Frac(1, 2) * Frac(1, 3), Frac(1, 6))
-        self.assertEqual(Frac(1, 3) * Frac(0, 24), Frac(0, 72))
+        self.assertEqual(Frac(1, 3) * Frac(0, 24), Frac(0, 1))
         self.assertEqual(Frac(1, 3) * Frac(3), Frac(1, 1))
-        self.assertEqual(Frac(1, 3) * 0, Frac(0, 3))
+        self.assertEqual(Frac(1, 3) * 0, Frac(0, 1))
         self.assertEqual(Frac(1, 3) * -3, Frac(-1, 1))
 
     def test_rmul_frac(self):
@@ -250,11 +250,11 @@ class TestFractions(unittest.TestCase):
     def test_invert(self):     
         self.assertEqual(Frac(1, 3), ~Frac(3))
         self.assertFalse(Frac(1, 2) == ~Frac(1, 3))
-        self.assertRaises(ValueError, lambda: ~Frac(0, 24))
+        self.assertRaises(ValueError, lambda: ~Frac(0, 1))
 
     def test_float(self):      
         self.assertEqual(float(Frac(1, 2)), 0.5)
-        self.assertEqual(float(Frac(0, 24)), 0.0)
+        self.assertEqual(float(Frac(0, 1)), 0.0)
         self.assertEqual(float(Frac(1, -2)), -0.5)
 
     def test_hash(self):
