@@ -3,6 +3,7 @@ Projekt semestralny Python
 Algorytm binarnego drzewa poszukiwań ze wskaźnikiem do rodzica.
 Autor: Marcin Chamera
 '''
+from math import pow, floor, log
 
 class Node:
   '''Klasa reprezentująca węzeł drzewa.'''
@@ -111,42 +112,125 @@ class BinarySearchTree:
             node.parent.data if node.parent is not None else 'None')
         self.inorder(node.right)
 
+  def DSW(self):
+    '''Doprowadza drzewo do postaci zrównoważonej.'''
+    if self.root:
+      self.create_backbone(self.root, self.root)
+      self.create_perfect_BST()
+
+  def create_backbone(self, root, top):
+    '''Zamienia drzewo w listę przez wielokrotne użycie metody rotate_right.'''
+    left_child = None
+    parent = top
+    while parent:
+      left_child = parent.left
+      if left_child:
+        root = self.rotate_right(root, parent)
+        parent = left_child
+      else:
+        parent = parent.right
+    self.root = root
+
+  def rotate_right(self, root, top):
+    '''Rotacja wierzchołków w prawo z zachowaniem struktury BST.'''
+    if top.left is None:
+      return root
+    node = top.left
+    top.left = node.right
+    if node.right:
+      node.right.parent = top
+    node.parent = top.parent
+    if top.parent is None:
+      root = node
+    elif top == top.parent.right:
+      top.parent.right = node
+    else:
+      top.patent.left = node
+    node.right = top
+    top.parent = node
+    return root
+
+  def rotate_left(self, root, top):
+    '''Rotacja wierzchołków w lewo z zachowaniem struktury BST.'''
+    if top.right is None:
+      return root, top
+    node = top.right
+    top.right = node.left
+    if node.left:
+      node.left.parent = top
+    node.parent = top.parent
+    if top.parent is None:
+      root = node
+    elif top == top.parent.left:
+      top.parent.left = node
+    else:
+      top.parent.right = node
+    node.left = top
+    top.parent = node
+    return root
+
+  def create_perfect_BST(self):
+    '''Przywraca kształt drzewa poprzez wielokrotne wywołanie metody
+    make_rotations.'''
+    root = self.root
+    n = self.count(self.root)
+    m = int(pow(2, floor(log(n+1, 2)))-1)
+    root = self.make_rotations(root, n - m)
+    while m > 1:
+      m //= 2
+      root = self.make_rotations(root, m)
+    self.root = root
+
+  def make_rotations(self, root, bound):
+    '''Wykonuje wielokrotne lewe rotacja na co drugim węźle, względem jego
+    rodzica.'''
+    parent = root
+    for _ in range(bound):
+      if parent:
+        root = self.rotate_left(root, parent)
+        if parent.parent:
+          parent = parent.parent.right
+    return root
+
+  def height(self, root):
+    '''Zwraca wysokość drzewa.'''
+    if root == None: 
+        return 0
+    return 1 + max(self.height(root.left), self.height(root.right))
+
+import unittest
+
+class TestBinarySearchTree(unittest.TestCase):
+  def setUp(self):
+    self.t = BinarySearchTree()
+    self.nodes = [Node(10), Node(20), Node(30), Node(100), Node(90), Node(40),
+      Node(50), Node(60), Node(70), Node(80), Node(150), Node(110), Node(120)]
+    for node in self.nodes:
+      self.t.insert(node)
+
+  def test_print(self):      
+    self.assertEqual(str(Node(10)), '10')
+
+  def test_count(self):
+    self.assertEqual(self.t.count(self.t.root), 13)
+
+  def test_search(self):
+    self.assertTrue(self.t.search(self.t.root, 50))
+    self.assertFalse(self.t.search(self.t.root, 130))
+
+  def test_remove(self):
+    self.t.remove(10)
+    self.assertEqual(self.t.count(self.t.root), 12)
+    self.assertRaises(Exception, lambda: self.t.remove(10))
+  
+  def test_height(self):
+    self.assertEqual(self.t.height(self.t.root), 10)
+
+  def test_DSW(self):
+    self.t.DSW()
+    self.assertEqual(self.t.height(self.t.root), 4)
+
+  def tearDown(self): pass
+
 if __name__ == '__main__':
-  t = BinarySearchTree()
-
-  a = Node(10)
-  b = Node(20)
-  c = Node(30)
-  d = Node(100)
-  e = Node(90)
-  f = Node(40)
-  g = Node(50)
-  h = Node(60)
-  i = Node(70)
-  j = Node(80)
-  k = Node(150)
-  l = Node(110)
-  m = Node(120)
-
-  nodes = [a, b, c, d, e, f, g, h, i, j, k, l, m]
-
-  for node in nodes:
-    t.insert(node)
-
-  print('Po dodaniu wezlow:')
-  t.inorder(t.root)
-
-  print('Usunieto wezel o wartosci ', t.remove(10))
-  print('Usunieto wezel o wartosci ', t.remove(120))
-  not_exst_node_val = 130
-  try:
-    t.remove(not_exst_node_val)
-  except Exception as e:
-    z = e
-    print('Proba usuniecia wezla o wartosci', not_exst_node_val)
-    print(z)
-
-  print('Po usuwaniu wezlow:')
-  t.inorder(t.root)
-
-  print('Liczba wezlow w drzewie:', t.count(t.root))
+    unittest.main()
